@@ -102,7 +102,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="embed_lib.pas"/>
         <DCCReference Include="embed_api.pas"/>
         <DCCReference Include="embed_ui.pas">
             <Form>EmbedUi</Form>

@@ -37,7 +37,7 @@ constructor TEmbedUi.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   api := TEmbedApi.Create;
-  api.Configurar;
+  api.GerarToken;
 end;
 
 procedure TEmbedUi.BtnXmlClick(Sender: TObject);
@@ -45,7 +45,6 @@ var
   ValorStr, Output: string;
 begin
   ValorStr := InputBox('XML', 'Conteúdo do XML:', '');
-  api.Iniciar();
   ShowStatus('[XML] Iniciado');
   Output := api.Xml(ValorStr);
   if Output = '1' then
@@ -61,11 +60,6 @@ begin
       else
         ShowStatus('[XML] Processando');
     end;
-    Output := api.Finalizar;
-    if Output = '0' then
-      ShowStatus('[XML] Finalizado')
-    else
-      ShowStatus('[XML] Falha na finalização');
   end;
 end;
 
@@ -76,7 +70,6 @@ begin
   if DlgEmbed.Execute then
   begin
     ValorStr := DlgEmbed.FileName;
-    api.Iniciar();
     ShowStatus('[XML] Iniciado');
     Output := api.Path(ValorStr);
     if Output = '1' then
@@ -92,11 +85,6 @@ begin
         else
           ShowStatus('[XML] Processando');
       end;
-      Output := api.Finalizar;
-      if Output = '0' then
-        ShowStatus('[XML] Finalizado')
-      else
-        ShowStatus('[XML] Falha na finalização');
     end;
   end
   else
@@ -110,7 +98,6 @@ begin
   if DlgEmbed.Execute then
   begin
     ValorStr := DlgEmbed.FileName;
-    api.Iniciar();
     ShowStatus('[XML] Iniciado');
     Output := api.Zip(ValorStr);
     if Output = '1' then
@@ -126,11 +113,6 @@ begin
         else
           ShowStatus('[XML] Processando');
       end;
-      Output := api.Finalizar;
-      if Output = '0' then
-        ShowStatus('[XML] Finalizado')
-      else
-        ShowStatus('[XML] Falha na finalização');
     end;
   end
   else
@@ -144,7 +126,6 @@ begin
   if DlgEmbed.Execute then
   begin
     ValorStr := DlgEmbed.FileName;
-    api.Iniciar();
     ShowStatus('[XML] Iniciado');
     Output := api.Rar(ValorStr);
     if Output = '1' then
@@ -160,11 +141,6 @@ begin
         else
           ShowStatus('[XML] Processando');
       end;
-      Output := api.Finalizar;
-      if Output = '0' then
-        ShowStatus('[XML] Finalizado')
-      else
-        ShowStatus('[XML] Falha na finalização');
     end;
   end
   else
@@ -177,3 +153,4 @@ begin
 end;
 
 end.
+
