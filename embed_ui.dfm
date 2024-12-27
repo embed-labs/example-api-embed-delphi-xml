@@ -1371,7 +1371,7 @@ object EmbedUi: TEmbedUi
     Height = 30
     Caption = 'RAR'
     TabOrder = 3
-    OnClick = BtnZipClick
+    OnClick = BtnRarClick
   end
   object DlgEmbed: TOpenDialog
     Left = 504

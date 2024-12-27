@@ -3,7 +3,7 @@
 interface
 
 uses
-  System.SysUtils, System.Classes, System.Net.HttpClient, System.Net.URLClient, System.Net.HttpClientComponent, System.Net.Mime, System.JSON;
+  System.SysUtils, System.Classes, System.IOUtils, System.Net.HttpClient, System.Net.URLClient, System.Net.HttpClientComponent, System.Net.Mime, System.JSON;
 
 type
   TEmbedApi = class
@@ -12,6 +12,7 @@ type
       BASE_URL = 'https://xml.embed.it/v1/';
     var
       ID_PDV, TOKEN, FILE_ANALYZE_ID: string;
+    procedure CreateLog(const LogContent: string);
   public
     function GerarToken: string;
     function Xml(const Content: string): string;
@@ -23,12 +24,41 @@ type
 
 implementation
 
+procedure TEmbedApi.CreateLog(const LogContent: string);
+var
+  LogFileName, LogFilePath: string;
+  LogFile: TextFile;
+begin
+  // Cria o nome do arquivo de log com a data e minuto no nome
+  LogFileName := FormatDateTime('yyyy-mm-dd_hhnn', Now) + '_log.txt';
+
+  // Cria o caminho completo para o arquivo de log na pasta "log"
+  LogFilePath := TPath.Combine(ExtractFilePath(ParamStr(0)), 'log');
+
+  // Cria o diretório "log" se ele não existir
+  if not DirectoryExists(LogFilePath) then
+    CreateDir(LogFilePath);
+
+  // Combina o caminho do diretório com o nome do arquivo
+  LogFilePath := TPath.Combine(LogFilePath, LogFileName);
+
+  // Abre ou cria o arquivo de log para escrita
+  AssignFile(LogFile, LogFilePath);
+  try
+    Rewrite(LogFile);
+    WriteLn(LogFile, LogContent);
+  finally
+    CloseFile(LogFile);
+  end;
+end;
+
+
 function TEmbedApi.GerarToken: string;
 const
-  ACCESS_KEY = 'sua_access_key';
-  SECRET_KEY = 'sua_secret_key';
+  ACCESS_KEY = '214e495a@vmwiu.hic';
+  SECRET_KEY = 'U5dpx1DF2jYuN78gTdizpEa$4U1GLJFRJ6h0OJ8r';
 begin
-  ID_PDV := 'seu_id_pdv';
+  ID_PDV := 'ca4b4498-2753-4753-9490-65d1bf26b344';
 
   if (ACCESS_KEY = '') or (SECRET_KEY = '') or (ID_PDV = '') then
     Exit('-1');
@@ -261,6 +291,15 @@ begin
       Exit('-1');
   end;
 end;
+
+// Salvar um log após a execução do programa
+initialization
+  with TEmbedApi.Create do
+  try
+    CreateLog('Log de execução do programa.');
+  finally
+    Free;
+  end;
 
 end.
 
