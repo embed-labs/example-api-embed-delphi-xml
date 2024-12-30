@@ -52,28 +52,42 @@ begin
   end;
 end;
 
-
 function TEmbedApi.GerarToken: string;
 const
-  ACCESS_KEY = '214e495a@vmwiu.hic';
-  SECRET_KEY = 'U5dpx1DF2jYuN78gTdizpEa$4U1GLJFRJ6h0OJ8r';
+  ACCESS_KEY = '214e495a@vmwiu.hic';  // Mover para uma configuração segura
+  SECRET_KEY = 'U5dpx1DF2jYuN78gTdizpEa$4U1GLJFRJ6h0OJ8r';  // Mover para uma configuração segura
+var
+  HttpClient: THttpClient;
+  Payload: TStringStream;
+  JSONObj: TJSONObject;
+  Response: IHTTPResponse;
 begin
   ID_PDV := 'ca4b4498-2753-4753-9490-65d1bf26b344';
 
   if (ACCESS_KEY = '') or (SECRET_KEY = '') or (ID_PDV = '') then
     Exit('-1');
 
-  var HttpClient := THttpClient.Create;
+  HttpClient := THttpClient.Create;
   try
-    var Payload := TStringStream.Create;
+    Payload := TStringStream.Create;
     try
-      var JSONObj := TJSONObject.Create;
+      JSONObj := TJSONObject.Create;
       try
         JSONObj.AddPair('accessKey', ACCESS_KEY);
         JSONObj.AddPair('secretKey', SECRET_KEY);
         Payload.WriteString(JSONObj.ToString);
+        Payload.Position := 0; // Resetar a posição do payload para o início
 
-        var Response := HttpClient.Post(BASE_URL + 'validateLogin', Payload);
+        // Adicionar um log para verificar o conteúdo do payload
+        CreateLog('Payload: ' + Payload.DataString);
+
+        HttpClient.CustomHeaders['Content-Type'] := 'application/json';
+        Response := HttpClient.Post(BASE_URL + 'validateLogin', Payload);
+
+        // Adicionar um log para verificar a resposta
+        CreateLog('Response Status Code: ' + Response.StatusCode.ToString);
+        CreateLog('Response Content: ' + Response.ContentAsString);
+
         if Response.StatusCode = 200 then
         begin
           JSONObj := TJSONObject.ParseJSONValue(Response.ContentAsString) as TJSONObject;
@@ -93,9 +107,14 @@ begin
     end;
   except
     on E: Exception do
+    begin
+      // Log da exceção para facilitar a depuração
+      CreateLog('Exception: ' + E.Message);
       Exit('-1');
+    end;
   end;
 end;
+
 
 function TEmbedApi.Xml(const Content: string): string;
 begin
