@@ -12,7 +12,6 @@ type
       BASE_URL = 'https://xml.embed.it/v1/';
     var
       ID_PDV, TOKEN, FILE_ANALYZE_ID: string;
-    procedure CreateLog(const LogContent: string);
   public
     function GerarToken: string;
     function Xml(const Content: string): string;
@@ -23,34 +22,6 @@ type
   end;
 
 implementation
-
-procedure TEmbedApi.CreateLog(const LogContent: string);
-var
-  LogFileName, LogFilePath: string;
-  LogFile: TextFile;
-begin
-  // Cria o nome do arquivo de log com a data e minuto no nome
-  LogFileName := FormatDateTime('yyyy-mm-dd_hhnn', Now) + '_log.txt';
-
-  // Cria o caminho completo para o arquivo de log na pasta "log"
-  LogFilePath := TPath.Combine(ExtractFilePath(ParamStr(0)), 'log');
-
-  // Cria o diretório "log" se ele não existir
-  if not DirectoryExists(LogFilePath) then
-    CreateDir(LogFilePath);
-
-  // Combina o caminho do diretório com o nome do arquivo
-  LogFilePath := TPath.Combine(LogFilePath, LogFileName);
-
-  // Abre ou cria o arquivo de log para escrita
-  AssignFile(LogFile, LogFilePath);
-  try
-    Rewrite(LogFile);
-    WriteLn(LogFile, LogContent);
-  finally
-    CloseFile(LogFile);
-  end;
-end;
 
 function TEmbedApi.GerarToken: string;
 const
@@ -78,15 +49,8 @@ begin
         Payload.WriteString(JSONObj.ToString);
         Payload.Position := 0; // Resetar a posição do payload para o início
 
-        // Adicionar um log para verificar o conteúdo do payload
-        CreateLog('Payload: ' + Payload.DataString);
-
         HttpClient.CustomHeaders['Content-Type'] := 'application/json';
         Response := HttpClient.Post(BASE_URL + 'validateLogin', Payload);
-
-        // Adicionar um log para verificar a resposta
-        CreateLog('Response Status Code: ' + Response.StatusCode.ToString);
-        CreateLog('Response Content: ' + Response.ContentAsString);
 
         if Response.StatusCode = 200 then
         begin
@@ -107,14 +71,9 @@ begin
     end;
   except
     on E: Exception do
-    begin
-      // Log da exceção para facilitar a depuração
-      CreateLog('Exception: ' + E.Message);
       Exit('-1');
-    end;
   end;
 end;
-
 
 function TEmbedApi.Xml(const Content: string): string;
 begin
@@ -310,15 +269,6 @@ begin
       Exit('-1');
   end;
 end;
-
-// Salvar um log após a execução do programa
-initialization
-  with TEmbedApi.Create do
-  try
-    CreateLog('Log de execução do programa.');
-  finally
-    Free;
-  end;
 
 end.
 
