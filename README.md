@@ -1,107 +1,143 @@
+# Exemplo demonstrativo para o uso da API Embed no envio de XML
 
-# TEmbedApi
-
-Uma classe Delphi para integração com a API da Embed para processamento de arquivos XML, ZIP e RAR. Essa classe fornece métodos para autenticação e envio de arquivos para análise na plataforma.
-
----
-
-## ⚙️ Funcionalidades
-
-- **Autenticação (Geração de Token):** `GerarToken` realiza a autenticação na API e obtém o token para autorizações futuras.
-- **Envio de XML:** `Xml` envia o conteúdo de um arquivo XML para análise.
-- **Envio de Arquivo:** `Path` realiza o upload de um arquivo específico para análise.
-- **Envio de Arquivo ZIP:** `Zip` envia arquivos compactados no formato ZIP para análise.
-- **Envio de Arquivo RAR:** `Rar` envia arquivos compactados no formato RAR para análise.
-- **Consulta de Status:** `GetStatus` consulta o status do processamento de um arquivo enviado.
+Este repositório demonstra como utilizar a API Embed para envio e processamento de XMLs no servidor de armazenamento, com recursos avançados de IA e ML.  
 
 ---
 
-## 🛠️ Como Usar
+## Instalação
 
-### 1. Instalação
+### Requisitos
+- **Delphi**: É necessário ter o Delphi instalado em sua máquina.
+- **Versão de Delphi recomendada**: Verifique a compatibilidade com o projeto.
 
-Adicione o arquivo `embed_api.pas` ao seu projeto Delphi.
-
-### 2. Configuração Inicial
-
-- Defina o `ACCESS_KEY`, `SECRET_KEY`, e `ID_PDV` no método `GerarToken`. Recomenda-se que essas informações sejam armazenadas em um local seguro, como variáveis de ambiente ou um arquivo de configuração, em vez de estar diretamente no código.
-
-### 3. Exemplo de Uso
-
-```delphi
-uses
-  embed_api;
-
-var
-  EmbedApi: TEmbedApi;
-  Status: string;
-begin
-  EmbedApi := TEmbedApi.Create;
-  try
-    // Geração do Token
-    if EmbedApi.GerarToken = '0' then
-    begin
-      Writeln('Autenticação bem-sucedida.');
-
-      // Envio de um arquivo XML
-      Status := EmbedApi.Xml('<xml><example>test</example></xml>');
-      if Status <> '-1' then
-        Writeln('Arquivo enviado com sucesso! Status: ', Status)
-      else
-        Writeln('Falha no envio do XML.');
-    end
-    else
-      Writeln('Falha na autenticação.');
-  finally
-    EmbedApi.Free;
-  end;
-end;
+### Clonar o repositório
+Clone o repositório para sua máquina local:
+```bash
+git clone https://github.com/embed-labs/example-api-embed-delphi-xml.git
 ```
 
-### 4. Métodos
-
-#### `função GerarToken: string`
-- Gera o token de autenticação.
-- Retorna:
-  - `0`: Token gerado com sucesso.
-  - `-1`: Erro na geração do token.
-
-#### `função Xml(const Content: string): string`
-- Envia o conteúdo XML para análise.
-- Parâmetros:
-  - `Content`: Conteúdo XML em formato string.
-- Retorna:
-  - `0`: Processamento finalizado.
-  - `1`: Em processamento.
-  - `-1`: Falha no envio ou erro no processamento.
-
-#### `função Path(const PathFile: string): string`
-- Envia um arquivo para análise.
-- Parâmetros:
-  - `PathFile`: Caminho completo do arquivo.
-- Retorna:
-  - `0`: Processamento finalizado.
-  - `1`: Em processamento.
-  - `-1`: Falha no envio ou erro no processamento.
-
-#### `função Zip(const PathZip: string): string`
-- Envia um arquivo ZIP para análise.
-- Parâmetros:
-  - `PathZip`: Caminho completo do arquivo ZIP.
-- Retorna os mesmos valores que o método `Path`.
-
-#### `função Rar(const PathRar: string): string`
-- Envia um arquivo RAR para análise.
-- Parâmetros:
-  - `PathRar`: Caminho completo do arquivo RAR.
-- Retorna os mesmos valores que o método `Path`.
-
-#### `função GetStatus: string`
-- Consulta o status do processamento do arquivo enviado.
-- Retorna:
-  - `1`: Processamento finalizado.
-  - `0`: Processando.
-  - `-1`: Erro ou status inválido.
+### Configurações
+1. Acesse o diretório clonado.
+2. Abra o projeto na IDE do Delphi.
 
 ---
 
+## Sobre o exemplo
+
+Este exemplo contém dois itens fundamentais:
+
+1. **`embed_api.pas`**  
+   Contém as implementações dos métodos de transação/operação com XML.  
+2. **`embed_ui.pas`**  
+   Interface gráfica simplificada que consome os métodos da API.  
+
+---
+
+## API
+
+### Fluxo
+O fluxo de uso da API segue os seguintes passos:  
+
+- Configurar o acesso com as credenciais (Gerar Token).  
+- Escolher uma das modalidades de envio:  
+  - Por conteúdo XML (String).  
+  - Por caminho absoluto do arquivo.  
+  - Por arquivo compactado (ZIP ou RAR).  
+- Consultar o status do processamento (opcional).  
+
+---
+
+## Métodos
+
+### 1. Configurar
+
+#### Credenciais
+Passe as credenciais abaixo para que a função gere o token:
+```delphi
+ACCESS_KEY := '';
+SECRET_KEY := '';
+ID_PDV := '';
+```
+
+#### Uso
+Este método realiza a autenticação na API, gerando um token válido para as operações subsequentes.
+
+#### Retornos
+- **0**: Sucesso.  
+- **-1**: Erro ao gerar o token (verifique as credenciais ou a conexão).
+
+---
+
+### 2. Enviar XML
+
+#### Assinatura
+```delphi
+function Xml(const Content: string): string;
+```
+
+#### Uso
+Envia o conteúdo XML como string para processamento.  
+
+#### Retornos
+- **0**: Sucesso.  
+- **1**: Em processamento.  
+- **-1**: Falha no envio.
+
+---
+
+### 3. Enviar Arquivo (Path, ZIP ou RAR)
+
+#### Assinatura
+```delphi
+function Path(const PathFile: string): string;
+function Zip(const PathZip: string): string;
+function Rar(const PathRar: string): string;
+```
+
+#### Uso
+Permite o envio de arquivos XML diretamente por caminho absoluto, ou arquivos compactados no formato ZIP ou RAR.  
+
+#### Retornos
+- **0**: Sucesso.  
+- **1**: Em processamento.  
+- **-1**: Falha no envio.
+
+---
+
+### 4. Consultar Status
+
+#### Assinatura
+```delphi
+function GetStatus: string;
+```
+
+#### Uso
+Consulta o status de um arquivo enviado anteriormente, utilizando o identificador de análise (`FILE_ANALYZE_ID`).
+
+#### Retornos
+- **1**: Processamento concluído.  
+- **0**: Em processamento.  
+- **-1**: Erro ou status inválido.
+
+---
+
+## Retornos
+
+| Código | Mensagem                     |
+|--------|-------------------------------|
+| 0      | Sucesso                      |
+| -1     | Erro                         |
+| -2     | Deserialize                  |
+| -3     | ProviderError                |
+| -41    | XmlError                     |
+| -42    | XmlMissingParameter          |
+| -43    | XmlInvalidOperation          |
+| -44    | XmlInputBadFormat            |
+
+| Status Code | Status Message            |
+|-------------|----------------------------|
+| -1          | Erro                      |
+| 0           | Iniciado & Finalizado      |
+| 1           | Processando               |
+
+---
