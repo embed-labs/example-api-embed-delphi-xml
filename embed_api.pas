@@ -25,15 +25,15 @@ implementation
 
 function TEmbedApi.GerarToken: string;
 const
-  ACCESS_KEY = '214e495a@vmwiu.hic';  // Mover para uma configuração segura
-  SECRET_KEY = 'U5dpx1DF2jYuN78gTdizpEa$4U1GLJFRJ6h0OJ8r';  // Mover para uma configuração segura
+  ACCESS_KEY = '';
+  SECRET_KEY = '';
 var
   HttpClient: THttpClient;
   Payload: TStringStream;
   JSONObj: TJSONObject;
   Response: IHTTPResponse;
 begin
-  ID_PDV := 'ca4b4498-2753-4753-9490-65d1bf26b344';
+  ID_PDV := '';
 
   if (ACCESS_KEY = '') or (SECRET_KEY = '') or (ID_PDV = '') then
     Exit('-1');
@@ -47,7 +47,7 @@ begin
         JSONObj.AddPair('accessKey', ACCESS_KEY);
         JSONObj.AddPair('secretKey', SECRET_KEY);
         Payload.WriteString(JSONObj.ToString);
-        Payload.Position := 0; // Resetar a posição do payload para o início
+        Payload.Position := 0;
 
         HttpClient.CustomHeaders['Content-Type'] := 'application/json';
         Response := HttpClient.Post(BASE_URL + 'validateLogin', Payload);
