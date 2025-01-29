@@ -1,0 +1,15 @@
+# Ignora diretórios de histórico e recuperação
+__history/
+__recovery/
+
+# Ignora arquivos de compilação e caches
+*.res
+*.local
+*.identcache
+
+# Ignora todos os arquivos dentro de Win32/Debug exceto a DLL
+Win32/Debug/*
+!Win32/Debug/*.dll
+
+# Ignora logs em qualquer pasta Debug
+**/Debug/logs
