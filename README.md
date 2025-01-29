@@ -1,3 +1,5 @@
+![image](https://github.com/user-attachments/assets/c8033b14-cc43-456d-89df-18b79b3fe5ef)
+
 # Exemplo demonstrativo para o uso da API Embed no envio de XML
 
 Este repositório demonstra como utilizar a API Embed para envio e processamento de XMLs no servidor de armazenamento, com recursos avançados de IA e ML.  
